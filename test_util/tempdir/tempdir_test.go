@@ -12,7 +12,9 @@ func TestCreate(t *testing.T) {
 	dir := Create(t)
 	assert.Assert(t, dir != "")
 
-	defer assert.NilError(t, os.Remove(dir))
+	defer func () {
+		assert.NilError(t, os.Remove(dir))
+	}()
 
 	_, err := ioutil.ReadDir(dir)
 	assert.NilError(t, err)
