@@ -14,6 +14,11 @@ jobs:
           name: Generate
           command: go generate
       - run:
+          name: Generate example project
+          command: |
+            cd example
+            go generate
+      - run:
           name: Test
           command: go test ./..
 workflows:
