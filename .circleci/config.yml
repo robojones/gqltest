@@ -20,7 +20,7 @@ jobs:
             go generate
       - run:
           name: Test
-          command: go test ./..
+          command: go test ./...
 workflows:
   version: 2
   build:
