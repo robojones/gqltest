@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 )
 
-func (reader *Reader) readSource(filename string) *source.Source {
+func (r *Reader) readSource(filename string) *source.Source {
 	content, err := ioutil.ReadFile(filename)
 
 	if err != nil {
