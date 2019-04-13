@@ -7,13 +7,13 @@ import (
 	"testing"
 )
 
-func TestReadConfig(t *testing.T) {
+func TestReadConfigData(t *testing.T) {
 	dir := tempdir.Create(t)
 	defer tempdir.Remove(t, dir)
 
 	tempfile.Create(t, dir, ConfigFileName, testConfigContent)
 
-	c, err := ReadConfig(WD(dir))
+	c, err := readConfigData(WD(dir))
 
 	assert.NilError(t, err)
 	assert.Equal(t, c.Endpoint, testEndpoint)

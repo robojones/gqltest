@@ -5,7 +5,7 @@ import (
 )
 
 func (t *Tester) Run() error {
-	s := t.reader.Read(t.config.TestRoot)
+	s := t.reader.Read(t.config.TestRoot())
 
 	v := request.NewVariables()
 	p := request.NewPayload("Test", string(s.Body), v)

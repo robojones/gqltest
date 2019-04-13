@@ -5,8 +5,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func parseConfig(b []byte) (*Config, error) {
-	c := newDefaultConfig()
+func parseConfig(b []byte) (*configData, error) {
+	c := newDefaultConfigData()
 	err := yaml.UnmarshalStrict(b, c)
 
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 )
 
 func TestVerify(t *testing.T) {
-	c := newDefaultConfig()
+	c := newDefaultConfigData()
 	c.Endpoint = "http://localhost:2345"
 
 	err := verifyConfig(c)
@@ -16,7 +16,7 @@ func TestVerify(t *testing.T) {
 }
 
 func TestVerify_Fail(t *testing.T) {
-	c := newDefaultConfig()
+	c := newDefaultConfigData()
 
 	err := verifyConfig(c)
 

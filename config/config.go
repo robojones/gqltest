@@ -1,20 +1,35 @@
 package config
 
+import "path"
+
 const ConfigFileName = "gqltest.yml"
 const DefaultTestRoot = "tests"
 
 type WD string
 
-// Config represents the contents of the gqltest.yml file.
+// Config
 type Config struct {
-	// Endpoint specifies the URL to run the tests against.
-	Endpoint string `yaml:"endpoint"`
-	// TestRoot is the root directory of your tests.
-	TestRoot string `yaml:"testRoot"`
+	wd   string
+	data *configData
 }
 
-func newDefaultConfig() *Config {
-	return &Config{
-		TestRoot: DefaultTestRoot,
+func NewConfig(wd WD) (*Config, error) {
+	d, err := readConfigData(wd)
+
+	if err != nil {
+		return nil, err
 	}
+
+	return &Config{
+		wd: string(wd),
+		data: d,
+	}, nil
+}
+
+func (c *Config) Endpoint() string {
+	return c.data.Endpoint
+}
+
+func (c *Config) TestRoot()string {
+	return path.Join(c.wd, c.data.TestRoot)
 }
