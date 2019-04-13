@@ -10,7 +10,7 @@ func (r *Reader) readSource(filename string) *source.Source {
 	content, err := ioutil.ReadFile(filename)
 
 	if err != nil {
-		panic(errors.Wrapf(err, "Error reading file \"%s\"", filename))
+		panic(errors.Wrap(err, filename))
 	}
 
 	return &source.Source{

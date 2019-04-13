@@ -1,11 +1,11 @@
 package tester
 
-import "github.com/robojones/gqltest/tester/request"
-
-const testdir = "tests"
+import (
+	"github.com/robojones/gqltest/tester/request"
+)
 
 func (t *Tester) Run() error {
-	s := t.reader.Read(testdir)
+	s := t.reader.Read(t.config.TestRoot)
 
 	v := request.NewVariables()
 	p := request.NewPayload("Test", string(s.Body), v)

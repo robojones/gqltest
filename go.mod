@@ -7,5 +7,6 @@ require (
 	github.com/graph-gophers/graphql-go v0.0.0-20190225005345-3e8838d4614c
 	github.com/graphql-go/graphql v0.7.8
 	github.com/pkg/errors v0.8.1
+	gopkg.in/yaml.v2 v2.2.2
 	gotest.tools v2.2.0+incompatible
 )

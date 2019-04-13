@@ -2,12 +2,23 @@
 
 package main
 
-import "log"
+import (
+	"flag"
+	"github.com/robojones/gqltest/config"
+	"log"
+)
 
 func main() {
-	t := InitTester()
+	flag.Parse()
+	testdir := flag.Arg(0)
 
-	err := t.Run()
+	t, err := InitTester(config.WD(testdir))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = t.Run()
 
 	if err != nil {
 		log.Fatal(err)
