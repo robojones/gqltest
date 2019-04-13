@@ -1,0 +1,5 @@
+# IntelliJ
+.idea/
+
+# Generated files
+*_gen.go

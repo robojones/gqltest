@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/golang:1.11.4
+        environment:
+          GO111MODULE: "on"
+    steps:
+      - checkout
+      - run:
+          name: Install wire
+          command: go get github.com/google/wire/cmd/wire
+      - run:
+          name: Generate
+          command: go generate
+      - run:
+          name: Test
+          command: go test ./...
+workflows:
+  version: 2
+  build:
+    jobs:
+      - test
