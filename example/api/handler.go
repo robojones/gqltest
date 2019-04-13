@@ -9,7 +9,7 @@ import (
 )
 
 func NewHandler(query *query.Resolver) *relay.Handler {
-	s, err := ioutil.ReadFile("schema.graphqls")
+	s, err := ioutil.ReadFile("example/schema.graphqls")
 
 	if err != nil {
 		panic(errors.Wrap(err, "Example api"))

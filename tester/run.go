@@ -9,7 +9,7 @@ func (t *Tester) Run() error {
 
 	v := request.NewVariables()
 	p := request.NewPayload("Test", string(s.Body), v)
-	r := request.NewRequest(p)
+	r := request.NewRequest(t.config, p)
 
 	_, err := request.Send(r)
 

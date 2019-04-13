@@ -5,6 +5,8 @@ package main
 import (
 	"github.com/google/wire"
 	"github.com/robojones/gqltest/config"
+	"github.com/robojones/gqltest/example/api"
+	"github.com/robojones/gqltest/example/server"
 	"github.com/robojones/gqltest/source/reader"
 	"github.com/robojones/gqltest/tester"
 )
@@ -18,3 +20,13 @@ func InitTester(testdir config.WD) (*tester.Tester, error) {
 
 	return nil, nil
 }
+
+func InitTestServer() (*server.Server, error) {
+	wire.Build(
+		server.Provider,
+		api.Provider,
+	)
+
+	return nil, nil
+}
+

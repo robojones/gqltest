@@ -1,6 +1,9 @@
 package config
 
-import "path"
+import (
+	"github.com/pkg/errors"
+	"path"
+)
 
 const ConfigFileName = "gqltest.yml"
 const DefaultTestRoot = "tests"
@@ -17,7 +20,7 @@ func NewConfig(wd WD) (*Config, error) {
 	d, err := readConfigData(wd)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, string(wd))
 	}
 
 	return &Config{

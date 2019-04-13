@@ -4,21 +4,23 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/pkg/errors"
+	"github.com/robojones/gqltest/config"
 	"io/ioutil"
 	"net/http"
 )
 
 const (
 	contentType = "text/json"
-	url         = "http://localhost:4000/query"
 )
 
 type Request struct {
+	config  *config.Config
 	payload *Payload
 }
 
-func NewRequest(payload *Payload) *Request {
+func NewRequest(c *config.Config, payload *Payload) *Request {
 	return &Request{
+		config:  c,
 		payload: payload,
 	}
 }
@@ -40,7 +42,7 @@ func Send(r *Request) (*Result, error) {
 		return nil, errors.Wrap(err, "stringify body")
 	}
 
-	response, err := http.Post(url, contentType, b)
+	response, err := http.Post(r.config.Endpoint(), contentType, b)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "post request")
