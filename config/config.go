@@ -8,9 +8,9 @@ type WD string
 // Config represents the contents of the gqltest.yml file.
 type Config struct {
 	// Endpoint specifies the URL to run the tests against.
-	Endpoint string
+	Endpoint string `yaml:"endpoint"`
 	// TestRoot is the root directory of your tests.
-	TestRoot string
+	TestRoot string `yaml:"testRoot"`
 }
 
 func newDefaultConfig() *Config {
