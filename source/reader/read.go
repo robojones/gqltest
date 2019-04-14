@@ -10,5 +10,5 @@ const TestFile = "test.graphql"
 // Read all tests.
 func (r *Reader) Read(testdir string) *source.Source {
 	p := path.Join(testdir, TestFile)
-	return r.readSource(p)
+	return r.ReadSource(p)
 }
