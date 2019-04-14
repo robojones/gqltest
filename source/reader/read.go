@@ -2,13 +2,20 @@ package reader
 
 import (
 	"github.com/graphql-go/graphql/language/source"
-	"path"
 )
 
 const TestFile = "test.graphql"
 
 // Read all tests.
-func (r *Reader) Read(testdir string) *source.Source {
-	p := path.Join(testdir, TestFile)
-	return r.readSource(p)
+func (r *Reader) Read(testdir string) []*source.Source {
+	var (
+		s   []*source.Source
+		dir = r.ReadDir(testdir)
+	)
+
+	for _, name := range dir.Files {
+		s = append(s, r.ReadSource(name))
+	}
+
+	return s
 }

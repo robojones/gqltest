@@ -3,7 +3,6 @@ package reader
 import (
 	"github.com/pkg/errors"
 	"github.com/robojones/gqltest/test_util/tempdir"
-	"github.com/robojones/gqltest/test_util/tempfile"
 	"gotest.tools/assert"
 	"os"
 	"testing"
@@ -16,11 +15,11 @@ func TestReadSource(t *testing.T) {
 	defer tempdir.Remove(t, dir)
 
 	const body = "{}\n"
-	p := tempfile.Create(t, dir, name, body)
+	p := tempdir.File(t, dir, name, body)
 
 	reader := NewReader()
 
-	source := reader.readSource(p)
+	source := reader.ReadSource(p)
 
 	assert.Equal(t, source.Name, p)
 	assert.DeepEqual(t, string(source.Body), body)
@@ -34,5 +33,5 @@ func TestReadSourcePanic(t *testing.T) {
 
 	reader := NewReader()
 
-	reader.readSource("fileDoesNotExist.json")
+	reader.ReadSource("fileDoesNotExist.json")
 }
