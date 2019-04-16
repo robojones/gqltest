@@ -1,23 +1,25 @@
 package tester
 
 import (
-	"github.com/robojones/gqltest/source/bodypart"
+	"github.com/pkg/errors"
+	"github.com/vektah/gqlparser/ast"
+	"github.com/vektah/gqlparser/parser"
 )
 
-func (t *Tester) Read() ([]*bodypart.Part, error) {
+func (t *Tester) Read() ([]*ast.OperationDefinition, error) {
+	files := t.reader.Read(t.config.TestRoot())
 
-	var p []*bodypart.Part
-	s := t.reader.Read(t.config.TestRoot())
+	var ops []*ast.OperationDefinition
 
-	for _, source := range s {
-		parts, err := bodypart.ParseSource(source)
+	for _, source := range files {
+		doc, err := parser.ParseQuery(source)
 
 		if err != nil {
-			//return errors.Wrapf(err, "Test file %s", source.Name)
+			return nil, errors.Wrapf(err, "Test file %s", source.Name)
 		}
 
-		p = append(p, parts...)
+		ops = append(ops, doc.Operations...)
 	}
 
-	return p, nil
+	return ops, nil
 }
