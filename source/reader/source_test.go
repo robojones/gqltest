@@ -10,7 +10,7 @@ import (
 
 const name = "testfile.json"
 
-func TestReadSource(t *testing.T) {
+func TestReader_ReadSource(t *testing.T) {
 	dir := tempdir.Create(t)
 	defer tempdir.Remove(t, dir)
 
@@ -22,10 +22,10 @@ func TestReadSource(t *testing.T) {
 	source := reader.ReadSource(p)
 
 	assert.Equal(t, source.Name, p)
-	assert.DeepEqual(t, string(source.Body), body)
+	assert.DeepEqual(t, source.Input, body)
 }
 
-func TestReadSourcePanic(t *testing.T) {
+func TestReader_ReadSource_Panic(t *testing.T) {
 	defer func() {
 		err := recover().(error)
 		assert.Assert(t, os.IsNotExist(errors.Cause(err)))
