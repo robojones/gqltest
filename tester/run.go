@@ -6,16 +6,21 @@ import (
 )
 
 func (t *Tester) Run() error {
-	s := t.reader.Read(t.config.TestRoot())
+	tests, err := t.Read()
 
-	for _, source := range s {
+	if err != nil {
+		return err
+	}
+
+	for _, test := range tests {
+
 		v := request.NewVariables()
-		p := request.NewPayload("Test", string(source.Body), v)
+		p := request.NewPayload("Test", string(test.Content()), v)
 		r := request.NewRequest(t.config, p)
 		_, err := request.Send(r)
 
 		if err != nil {
-			return errors.Wrapf(err, "Test file %s", source.Name)
+			return errors.Wrap(err, test.Source.Name)
 		}
 	}
 
