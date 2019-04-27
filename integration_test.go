@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"gotest.tools/assert"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -24,6 +25,10 @@ var (
 )
 
 func TestMain(m *testing.M) {
+	if err := os.Setenv("PORT", testPort); err != nil {
+		panic(errors.Wrap(err, "set PORT env for test server"))
+	}
+
 	s, err := InitTestServer()
 
 	if err != nil {
@@ -34,13 +39,19 @@ func TestMain(m *testing.M) {
 		panic(errors.Wrap(err, "start test server"))
 	}
 
-	go func () {
+	log.Printf("test server online")
+
+	go func() {
+		log.Printf("serve")
 		if err := s.Serve(); err != http.ErrServerClosed {
+			log.Printf("server closed")
 			panic(errors.Wrap(err, "serve test server"))
 		}
 	}()
 
 	m.Run()
+
+	log.Printf("close test server")
 
 	if err := s.Close(); err != nil {
 		panic(errors.Wrap(err, "close test server"))

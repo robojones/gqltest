@@ -1,20 +1,20 @@
 package reader
 
 import (
-	"github.com/graphql-go/graphql/language/source"
+	"github.com/vektah/gqlparser/ast"
 )
 
-const TestFile = "test.graphql"
+type AllSources = map[string]*ast.Source
 
 // Read all tests.
-func (r *Reader) Read(testdir string) []*source.Source {
+func (r *Reader) Read(testdir string) map[string]*ast.Source {
 	var (
-		s   []*source.Source
+		s   = make(AllSources)
 		dir = r.ReadDir(testdir)
 	)
 
 	for _, name := range dir.Files {
-		s = append(s, r.ReadSource(name))
+		s[name] = r.ReadSource(name)
 	}
 
 	return s
