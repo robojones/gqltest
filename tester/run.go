@@ -14,6 +14,10 @@ func (t *Tester) Run() error {
 		return err
 	}
 
+	if len(tests) == 0 {
+		return errors.New("No tests found.")
+	}
+
 	for _, test := range tests {
 		v := request.NewVariables()
 		p := request.NewPayload("Test", source.Content(test.Position), v)
