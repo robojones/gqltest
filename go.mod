@@ -6,6 +6,7 @@ require (
 	github.com/google/wire v0.2.1
 	github.com/graph-gophers/graphql-go v0.0.0-20190225005345-3e8838d4614c
 	github.com/graphql-go/graphql v0.7.8
+	github.com/keltia/leftpad v0.1.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/vektah/gqlparser v1.1.2
 	gopkg.in/yaml.v2 v2.2.2

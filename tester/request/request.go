@@ -58,12 +58,5 @@ func Send(r *Request) (*Result, error) {
 		return nil, errors.New("Error reading body.")
 	}
 
-	result := new(Result)
-	err = json.Unmarshal(resBody, result)
-
-	if err != nil {
-		return nil, errors.Wrapf(err, "parse body \"%s\"", string(resBody))
-	}
-
-	return result, nil
+	return ParseResult(resBody)
 }

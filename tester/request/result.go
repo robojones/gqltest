@@ -1,5 +1,10 @@
 package request
 
+import (
+	"encoding/json"
+	"github.com/pkg/errors"
+)
+
 type ErrorLocation struct {
 	Row    int
 	Column int
@@ -13,7 +18,15 @@ type Error struct {
 	Extensions ErrorExtensions
 }
 
-type Result struct {
-	Data   interface{}
-	Errors []*Error
+type Result interface{}
+
+func ParseResult(body []byte) (*Result, error) {
+	result := new(Result)
+	err := json.Unmarshal(body, result)
+
+	if err != nil {
+		return nil, errors.Wrapf(err, "parse body \"%s\"", string(body))
+	}
+
+	return result, nil
 }
