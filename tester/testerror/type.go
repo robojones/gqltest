@@ -10,7 +10,7 @@ type TypeError struct {
 	expectedType string
 }
 
-func NewTypeError(actualValue *interface{}, expectedType string) *TypeError {
+func NewTypeError(actualValue interface{}, expectedType string) *TypeError {
 	return &TypeError{actualType: json.DetectType(actualValue), expectedType: expectedType}
 }
 

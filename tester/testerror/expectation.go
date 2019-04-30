@@ -3,6 +3,7 @@ package testerror
 import (
 	"fmt"
 	"github.com/robojones/gqltest/tester/json"
+	"strings"
 )
 
 type ExpectationError struct {
@@ -33,17 +34,9 @@ func (e *ExpectationError) Error() string {
 		e.err.Error(),
 	) + fmt.Sprintf(
 		"Field: %s\n\n",
-		joinPath(e.path),
+		strings.Join(e.path, "."),
 	) + fmt.Sprintf(
 		"Result from API\n%s",
 		json.StringifyObject(e.result),
 	)
-}
-
-func joinPath(path []string) string {
-	p := ""
-	for _, el := range path {
-		p += "." + el
-	}
-	return p
 }

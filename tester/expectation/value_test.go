@@ -9,13 +9,13 @@ import (
 
 func TestExpectValue(t *testing.T) {
 	path := []string{"data", "foo", "bar"}
-	var val interface{} = "cool"
+	var val = "cool"
 
 	result, err := request.ParseResult([]byte(`{ "data": { "foo": { "bar": "cool" }}}`))
 
 	assert.NilError(t, err)
 
-	exp := NewValueExpectation(path, &val)
+	exp := NewValueExpectation(path, val)
 	err = exp.Check(result)
 
 	assert.NilError(t, err)
@@ -38,13 +38,13 @@ func TestExpectValueComparisonError(t *testing.T) {
 
 func TestExpectTypeError(t *testing.T) {
 	path := []string{"data", "foo", "bar"}
-	var val interface{} = "cool"
+	var val = "some value"
 
 	result, err := request.ParseResult([]byte(`{ "data": true }`))
 
 	assert.NilError(t, err)
 
-	exp := NewValueExpectation(path, &val)
+	exp := NewValueExpectation(path, val)
 	err = exp.Check(result)
 
 	assert.ErrorType(t, err, new(testerror.ExpectationError))

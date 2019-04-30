@@ -6,6 +6,6 @@ import (
 )
 
 func TestJsonValue(t *testing.T) {
-	v := (*Value("true")).(bool)
+	v := (Value("true")).(bool)
 	assert.Assert(t, v, true)
 }

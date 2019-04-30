@@ -20,7 +20,7 @@ type Error struct {
 
 type Result interface{}
 
-func ParseResult(body []byte) (*Result, error) {
+func ParseResult(body []byte) (Result, error) {
 	result := new(Result)
 	err := json.Unmarshal(body, result)
 
@@ -28,5 +28,5 @@ func ParseResult(body []byte) (*Result, error) {
 		return nil, errors.Wrapf(err, "parse body \"%s\"", string(body))
 	}
 
-	return result, nil
+	return *result, nil
 }

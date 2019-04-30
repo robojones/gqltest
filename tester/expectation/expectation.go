@@ -8,7 +8,7 @@ import (
 )
 
 type Expectation interface {
-	Check(result *request.Result) error
+	Check(result request.Result) error
 }
 
 func FromDirective(path []string, directive *ast.Directive) (Expectation, error) {
@@ -20,20 +20,19 @@ func FromDirective(path []string, directive *ast.Directive) (Expectation, error)
 		value := directive.Arguments[0].Value
 
 		raw := value.Raw
-		v := new(interface{})
+		var v interface{}
 
 		switch value.Kind {
 		case ast.Variable:
 			return nil, errors.New("variables not supported")
 		case ast.FloatValue, ast.IntValue, ast.BooleanValue, ast.ListValue, ast.ObjectValue, ast.NullValue:
-			err := json.Unmarshal([]byte(raw), v)
+			err := json.Unmarshal([]byte(raw), &v)
 			if err != nil {
 				panic(errors.Wrap(err, "parsing argument value"))
 			}
 			break
 		case ast.StringValue, ast.EnumValue:
-			var inter interface{} = raw
-			v = &inter
+			v = raw
 			break
 		}
 

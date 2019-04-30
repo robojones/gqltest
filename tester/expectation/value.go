@@ -9,12 +9,12 @@ import (
 
 type ValueExpectation struct {
 	path  []string
-	value *interface{}
+	value interface{}
 }
 
 func NewValueExpectation(
 	path []string,
-	value *interface{},
+	value interface{},
 ) Expectation {
 	if len(path) < 1 {
 		panic(errors.New("Path for expectation must contain at least one element."))
@@ -26,9 +26,9 @@ func NewValueExpectation(
 	}
 }
 
-func (exp *ValueExpectation) Check(result *request.Result) error {
+func (exp *ValueExpectation) Check(result request.Result) error {
 	pathRemaining := exp.path
-	scope := reflect.ValueOf(*result)
+	scope := reflect.ValueOf(result)
 
 	for len(pathRemaining) > 0 {
 		key := reflect.ValueOf(pathRemaining[0])
@@ -38,7 +38,7 @@ func (exp *ValueExpectation) Check(result *request.Result) error {
 			scope = reflect.ValueOf(s)
 		} else {
 			val := scope.Interface()
-			typeErr := testerror.NewTypeError(&val, "Object")
+			typeErr := testerror.NewTypeError(interface{}(val), "Object")
 			pathTaken := exp.path[:len(exp.path)-len(pathRemaining)]
 			return testerror.NewExpectationError(typeErr, pathTaken, result)
 		}
@@ -48,8 +48,8 @@ func (exp *ValueExpectation) Check(result *request.Result) error {
 
 	actual := scope.Interface()
 
-	if !reflect.DeepEqual(actual, *exp.value) {
-		compErr := testerror.NewComparisonError(*exp.value, actual)
+	if !reflect.DeepEqual(actual, exp.value) {
+		compErr := testerror.NewComparisonError(exp.value, actual)
 		return testerror.NewExpectationError(compErr, exp.path, result)
 	}
 

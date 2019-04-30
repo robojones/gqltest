@@ -6,6 +6,7 @@ import (
 	json2 "github.com/robojones/gqltest/tester/json"
 	"gotest.tools/assert"
 	"log"
+	"strings"
 	"testing"
 )
 
@@ -44,6 +45,6 @@ func TestExpectationError_Error(t *testing.T) {
 	e := NewExpectationError(orig, path, r)
 
 	assert.ErrorContains(t, e, json2.StringifyObject(r))
-	assert.ErrorContains(t, e, joinPath(path))
+	assert.ErrorContains(t, e, strings.Join(path, "."))
 	assert.ErrorContains(t, e, orig.Error())
 }

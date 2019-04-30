@@ -2,8 +2,8 @@ package json
 
 import "github.com/pkg/errors"
 
-func DetectType(v *interface{}) string {
-	switch (*v).(type) {
+func DetectType(v interface{}) string {
+	switch (v).(type) {
 	case string:
 		return "String"
 	case float64:

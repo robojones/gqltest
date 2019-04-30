@@ -35,7 +35,7 @@ func (r *Request) Body() (*bytes.Reader, error) {
 	return bytes.NewReader(b), nil
 }
 
-func Send(r *Request) (*Result, error) {
+func Send(r *Request) (Result, error) {
 	b, err := r.Body()
 
 	if err != nil {
