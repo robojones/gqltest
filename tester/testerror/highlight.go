@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const NEWLINE = '\n'
+const newline = '\n'
 
 func highlight(directive *ast.Position, operation *ast.Position) string {
 	l := directive.Line
@@ -19,7 +19,7 @@ func highlight(directive *ast.Position, operation *ast.Position) string {
 	snippet := formatLineNumber(l, maxNumLen, directive.Line)
 
 	for _, r := range runes {
-		if r == NEWLINE {
+		if r == newline {
 			l += 1
 			snippet += formatLineNumber(l, maxNumLen, directive.Line)
 		}
@@ -27,7 +27,7 @@ func highlight(directive *ast.Position, operation *ast.Position) string {
 		snippet += string(r)
 	}
 
-	return snippet + string(NEWLINE)
+	return snippet + string(newline)
 }
 
 func formatLineNumber(l int, maxLen int, markLine int) string {

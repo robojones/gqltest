@@ -1,36 +1,18 @@
 package testerror
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
+	"github.com/robojones/gqltest/test_util/json"
 	"gotest.tools/assert"
 	"testing"
 )
-
-func jsonValue(s string) *interface{} {
-	v := new(interface{})
-	if err := json.Unmarshal([]byte(s), v); err != nil {
-		panic(errors.WithStack(err))
-	}
-	return v
-}
-
-func TestDetectType(t *testing.T) {
-	assert.Equal(t, DetectType(jsonValue("true")), "Boolean")
-	assert.Equal(t, DetectType(jsonValue("10")), "Number")
-	assert.Equal(t, DetectType(jsonValue("5.5")), "Number")
-	assert.Equal(t, DetectType(jsonValue("{}")), "Object")
-	assert.Equal(t, DetectType(jsonValue("[]")), "Array")
-	assert.Equal(t, DetectType(jsonValue("null")), "null")
-}
 
 func TestNewTypeError(t *testing.T) {
 	const (
 		expected = "Object"
 		actual   = "Boolean"
 	)
-	var value = jsonValue("true")
+	var value = json.Value("true")
 
 	e := NewTypeError(value, expected)
 
@@ -44,7 +26,7 @@ func TestTypeError_Error(t *testing.T) {
 		expected = "Object"
 		actual   = "Boolean"
 	)
-	var value = jsonValue("true")
+	var value = json.Value("true")
 
 	e := NewTypeError(value, expected)
 

@@ -16,18 +16,20 @@ func ExpectValue(
 	}
 
 	return func(result *request.Result) error {
-		p := path
+		pathRemaining := path
 		scope := reflect.ValueOf(*result)
 
-		for len(p) > 0 {
-			key := reflect.ValueOf(p[0])
-			p = p[1:]
+		for len(pathRemaining) > 0 {
+			key := reflect.ValueOf(pathRemaining[0])
+			pathRemaining = pathRemaining[1:]
 
 			if s, ok := scope.Interface().(map[string]interface{}); ok {
 				scope = reflect.ValueOf(s)
 			} else {
-				typeErr := testerror.NewTypeError(scope.Kind().String(), "object")
-				return testerror.NewExpectationError(typeErr, path, result)
+				val := scope.Interface()
+				typeErr := testerror.NewTypeError(&val, "Object")
+				pathTaken := path[:len(path)-len(pathRemaining)]
+				return testerror.NewExpectationError(typeErr, pathTaken, result)
 			}
 
 			scope = scope.MapIndex(key)

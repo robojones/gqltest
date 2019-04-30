@@ -2,7 +2,7 @@ package testerror
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
+	"github.com/robojones/gqltest/tester/json"
 )
 
 type TypeError struct {
@@ -11,7 +11,7 @@ type TypeError struct {
 }
 
 func NewTypeError(actualValue *interface{}, expectedType string) *TypeError {
-	return &TypeError{actualType: DetectType(actualValue), expectedType: expectedType}
+	return &TypeError{actualType: json.DetectType(actualValue), expectedType: expectedType}
 }
 
 func (e *TypeError) Error() string {
@@ -20,23 +20,4 @@ func (e *TypeError) Error() string {
 		e.expectedType,
 		e.actualType,
 	)
-}
-
-func DetectType(v *interface{}) string {
-	switch (*v).(type) {
-	case string:
-		return "String"
-	case float64:
-		return "Number"
-	case map[string]interface{}:
-		return "Object"
-	case []interface{}:
-		return "Array"
-	case bool:
-		return "Boolean"
-	case nil:
-		return "null"
-	default:
-		panic(errors.Errorf("Unknown type %T of value %#v", v, v))
-	}
 }

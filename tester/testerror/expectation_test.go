@@ -3,6 +3,7 @@ package testerror
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
+	json2 "github.com/robojones/gqltest/tester/json"
 	"gotest.tools/assert"
 	"log"
 	"testing"
@@ -42,7 +43,7 @@ func TestExpectationError_Cause(t *testing.T) {
 func TestExpectationError_Error(t *testing.T) {
 	e := NewExpectationError(orig, path, r)
 
-	assert.ErrorContains(t, e, stringifyObject(r))
+	assert.ErrorContains(t, e, json2.StringifyObject(r))
 	assert.ErrorContains(t, e, joinPath(path))
 	assert.ErrorContains(t, e, orig.Error())
 }

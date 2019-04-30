@@ -2,10 +2,8 @@ package testerror
 
 import (
 	"fmt"
+	"github.com/robojones/gqltest/tester/json"
 )
-
-const Prefix = ""
-const Indent = "  "
 
 type ComparisonError struct {
 	actual   interface{}
@@ -20,8 +18,8 @@ func NewComparisonError(actual interface{}, expected interface{}) *ComparisonErr
 }
 
 func (e *ComparisonError) Error() string {
-	exp := stringifyValue(e.expected)
-	act := stringifyValue(e.actual)
+	exp := json.StringifyValue(e.expected)
+	act := json.StringifyValue(e.actual)
 
 	return fmt.Sprintf("Expected %#v but instead got %#v", exp, act)
 }
