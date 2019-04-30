@@ -2,39 +2,72 @@ package testerror
 
 import (
 	"fmt"
-	"github.com/robojones/gqltest/source"
 	"github.com/vektah/gqlparser/ast"
 	"strings"
 )
 
-const newline = '\n'
+const (
+	newline     = '\n'
+	linesBefore = 1
+	linesAfter  = 1
+)
 
-func highlight(directive *ast.Position, operation *ast.Position) string {
-	l := directive.Line
+func highlight(directive *ast.Directive) string {
+	pos := directive.Position
+	selectIndex := pos.Line - 1
 
-	runes := []rune(source.Content(operation))
+	lines := getLines(pos.Src)
+	fromLine := selectIndex - linesBefore
+	toLine := selectIndex + 1 + linesAfter
+	maxNumberLen := getNumberLength(toLine)
 
-	maxNumLen := getMaxLineNumberLength(runes, directive.Line)
+	selectedLines := lines[fromLine:toLine]
 
-	snippet := formatLineNumber(l, maxNumLen, directive.Line)
+	r := ""
+
+	for i, line := range selectedLines {
+		lineIndex := fromLine + i
+		lineNumber := lineIndex + 1
+
+		mark := lineIndex == selectIndex
+		prefix := formatLineNumber(lineNumber, maxNumberLen, mark)
+
+		line = prefix + line
+
+		isLast := lineIndex == (selectIndex + linesAfter)
+		if !isLast {
+			line += string(newline)
+		}
+
+		r += line
+	}
+
+	return r
+}
+
+func getLines(src *ast.Source) []string {
+	var runes = []rune(src.Input)
+
+	var lineNumber = 0
+	var lines = []string{""}
 
 	for _, r := range runes {
 		if r == newline {
-			l += 1
-			snippet += formatLineNumber(l, maxNumLen, directive.Line)
+			lines = append(lines, "")
+			lineNumber += 1
+		} else {
+			lines[lineNumber] = lines[lineNumber] + string(r)
 		}
-
-		snippet += string(r)
 	}
 
-	return snippet + string(newline)
+	return lines
 }
 
-func formatLineNumber(l int, maxLen int, markLine int) string {
+func formatLineNumber(l int, maxLen int, markLine bool) string {
 	prefix := fmt.Sprintf("%d", l)
 	prefix = leftPad(prefix, maxLen)
 
-	if l == markLine {
+	if markLine {
 		prefix += "> "
 	} else {
 		prefix += "| "
@@ -43,16 +76,8 @@ func formatLineNumber(l int, maxLen int, markLine int) string {
 	return prefix
 }
 
-func getMaxLineNumberLength(runes []rune, startLine int) int {
-	n := 0
-
-	for _, r := range runes {
-		if r == '\n' {
-			n += 1
-		}
-	}
-
-	return len(fmt.Sprintf("%d", startLine+n))
+func getNumberLength(number int) int {
+	return len(fmt.Sprintf("%d", number))
 }
 
 func leftPad(s string, n int) string {
