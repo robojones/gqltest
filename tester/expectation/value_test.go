@@ -9,28 +9,28 @@ import (
 
 func TestExpectValue(t *testing.T) {
 	path := []string{"data", "foo", "bar"}
-	val := "cool"
+	var val interface{} = "cool"
 
 	result, err := request.ParseResult([]byte(`{ "data": { "foo": { "bar": "cool" }}}`))
 
 	assert.NilError(t, err)
 
-	e := ExpectValue(path, val)
-	err = e(result)
+	exp := NewValueExpectation(path, &val)
+	err = exp.Check(result)
 
 	assert.NilError(t, err)
 }
 
 func TestExpectValueComparisonError(t *testing.T) {
 	path := []string{"data", "foo", "bar"}
-	val := "cool"
+	var val interface{} = "cool"
 
 	result, err := request.ParseResult([]byte(`{ "data": { "foo": { "bar": "not cool" }}}`))
 
 	assert.NilError(t, err)
 
-	e := ExpectValue(path, val)
-	err = e(result)
+	exp := NewValueExpectation(path, &val)
+	err = exp.Check(result)
 
 	assert.ErrorType(t, err, new(testerror.ExpectationError))
 	assert.ErrorType(t, err.(*testerror.ExpectationError).Cause(), new(testerror.ComparisonError))
@@ -38,14 +38,14 @@ func TestExpectValueComparisonError(t *testing.T) {
 
 func TestExpectTypeError(t *testing.T) {
 	path := []string{"data", "foo", "bar"}
-	val := "cool"
+	var val interface{} = "cool"
 
 	result, err := request.ParseResult([]byte(`{ "data": true }`))
 
 	assert.NilError(t, err)
 
-	e := ExpectValue(path, val)
-	err = e(result)
+	exp := NewValueExpectation(path, &val)
+	err = exp.Check(result)
 
 	assert.ErrorType(t, err, new(testerror.ExpectationError))
 	assert.ErrorType(t, err.(*testerror.ExpectationError).Cause(), new(testerror.TypeError))

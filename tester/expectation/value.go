@@ -7,41 +7,51 @@ import (
 	"reflect"
 )
 
-func ExpectValue(
+type ValueExpectation struct {
+	path  []string
+	value *interface{}
+}
+
+func NewValueExpectation(
 	path []string,
-	expected interface{},
+	value *interface{},
 ) Expectation {
 	if len(path) < 1 {
 		panic(errors.New("Path for expectation must contain at least one element."))
 	}
 
-	return func(result *request.Result) error {
-		pathRemaining := path
-		scope := reflect.ValueOf(*result)
-
-		for len(pathRemaining) > 0 {
-			key := reflect.ValueOf(pathRemaining[0])
-			pathRemaining = pathRemaining[1:]
-
-			if s, ok := scope.Interface().(map[string]interface{}); ok {
-				scope = reflect.ValueOf(s)
-			} else {
-				val := scope.Interface()
-				typeErr := testerror.NewTypeError(&val, "Object")
-				pathTaken := path[:len(path)-len(pathRemaining)]
-				return testerror.NewExpectationError(typeErr, pathTaken, result)
-			}
-
-			scope = scope.MapIndex(key)
-		}
-
-		actual := scope.Interface()
-
-		if !reflect.DeepEqual(actual, expected) {
-			compErr := testerror.NewComparisonError(expected, actual)
-			return testerror.NewExpectationError(compErr, path, result)
-		}
-
-		return nil
+	return &ValueExpectation{
+		path:  path,
+		value: value,
 	}
+}
+
+func (exp *ValueExpectation) Check(result *request.Result) error {
+	pathRemaining := exp.path
+	scope := reflect.ValueOf(*result)
+
+	for len(pathRemaining) > 0 {
+		key := reflect.ValueOf(pathRemaining[0])
+		pathRemaining = pathRemaining[1:]
+
+		if s, ok := scope.Interface().(map[string]interface{}); ok {
+			scope = reflect.ValueOf(s)
+		} else {
+			val := scope.Interface()
+			typeErr := testerror.NewTypeError(&val, "Object")
+			pathTaken := exp.path[:len(exp.path)-len(pathRemaining)]
+			return testerror.NewExpectationError(typeErr, pathTaken, result)
+		}
+
+		scope = scope.MapIndex(key)
+	}
+
+	actual := scope.Interface()
+
+	if !reflect.DeepEqual(actual, *exp.value) {
+		compErr := testerror.NewComparisonError(*exp.value, actual)
+		return testerror.NewExpectationError(compErr, exp.path, result)
+	}
+
+	return nil
 }

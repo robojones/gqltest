@@ -4,4 +4,6 @@ import (
 	"github.com/robojones/gqltest/tester/request"
 )
 
-type Expectation = func(result *request.Result) error
+type Expectation interface {
+	Check(result *request.Result) error
+}
