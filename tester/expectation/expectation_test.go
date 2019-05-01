@@ -42,5 +42,5 @@ func TestFromDirective(t *testing.T) {
 
 	assert.NilError(t, err)
 	e := exp.(*ValueExpectation)
-	assert.Equal(t, (e.value).(string), "wazzup")
+	assert.Equal(t, e.value.(string), "wazzup")
 }

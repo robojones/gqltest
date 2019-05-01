@@ -3,11 +3,25 @@ package expectation
 import (
 	"github.com/robojones/gqltest/tester/request"
 	"github.com/robojones/gqltest/tester/testerror"
+	"github.com/vektah/gqlparser/ast"
 	"gotest.tools/assert"
 	"testing"
 )
 
-func TestExpectValue(t *testing.T) {
+func TestNewValueExpectation(t *testing.T) {
+	directive := &ast.Directive{}
+	path := []string{"data", "foo", "bar"}
+	var val = "cool"
+
+	exp := NewValueExpectation(directive, path, val).(*ValueExpectation)
+
+	assert.Equal(t, exp.directive, directive)
+	assert.Equal(t, exp.value.(string), val)
+	assert.DeepEqual(t, exp.path, path)
+}
+
+func TestValueExpectation_Check(t *testing.T) {
+	directive := &ast.Directive{}
 	path := []string{"data", "foo", "bar"}
 	var val = "cool"
 
@@ -15,13 +29,13 @@ func TestExpectValue(t *testing.T) {
 
 	assert.NilError(t, err)
 
-	exp := NewValueExpectation(path, val)
+	exp := NewValueExpectation(directive, path, val)
 	err = exp.Check(result)
 
 	assert.NilError(t, err)
 }
 
-func TestExpectValueComparisonError(t *testing.T) {
+func TestValueExpectation_CheckExpectValueComparisonError(t *testing.T) {
 	path := []string{"data", "foo", "bar"}
 	var val interface{} = "cool"
 
@@ -29,14 +43,14 @@ func TestExpectValueComparisonError(t *testing.T) {
 
 	assert.NilError(t, err)
 
-	exp := NewValueExpectation(path, &val)
+	exp := NewValueExpectation(nil, path, &val)
 	err = exp.Check(result)
 
 	assert.ErrorType(t, err, new(testerror.ExpectationError))
 	assert.ErrorType(t, err.(*testerror.ExpectationError).Cause(), new(testerror.ComparisonError))
 }
 
-func TestExpectTypeError(t *testing.T) {
+func TestValueExpectation_CheckExpectTypeError(t *testing.T) {
 	path := []string{"data", "foo", "bar"}
 	var val = "some value"
 
@@ -44,9 +58,17 @@ func TestExpectTypeError(t *testing.T) {
 
 	assert.NilError(t, err)
 
-	exp := NewValueExpectation(path, val)
+	exp := NewValueExpectation(nil, path, val)
 	err = exp.Check(result)
 
 	assert.ErrorType(t, err, new(testerror.ExpectationError))
 	assert.ErrorType(t, err.(*testerror.ExpectationError).Cause(), new(testerror.TypeError))
+}
+
+func TestValueExpectation_Directive(t *testing.T) {
+	directive := &ast.Directive{}
+
+	exp := NewValueExpectation(directive, []string{"asdf"}, "")
+
+	assert.Equal(t, exp.Directive(), directive)
 }

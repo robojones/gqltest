@@ -4,15 +4,18 @@ import (
 	"github.com/pkg/errors"
 	"github.com/robojones/gqltest/tester/request"
 	"github.com/robojones/gqltest/tester/testerror"
+	"github.com/vektah/gqlparser/ast"
 	"reflect"
 )
 
 type ValueExpectation struct {
-	path  []string
-	value interface{}
+	directive *ast.Directive
+	path      []string
+	value     interface{}
 }
 
 func NewValueExpectation(
+	directive *ast.Directive,
 	path []string,
 	value interface{},
 ) Expectation {
@@ -21,9 +24,14 @@ func NewValueExpectation(
 	}
 
 	return &ValueExpectation{
-		path:  path,
-		value: value,
+		directive: directive,
+		path:      path,
+		value:     value,
 	}
+}
+
+func (exp *ValueExpectation) Directive() *ast.Directive {
+	return exp.directive
 }
 
 func (exp *ValueExpectation) Check(result request.Result) error {

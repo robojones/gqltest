@@ -8,6 +8,7 @@ import (
 )
 
 type Expectation interface {
+	Directive() *ast.Directive
 	Check(result request.Result) error
 }
 
@@ -36,7 +37,7 @@ func FromDirective(path []string, directive *ast.Directive) (Expectation, error)
 			break
 		}
 
-		return NewValueExpectation(path, v), nil
+		return NewValueExpectation(directive, path, v), nil
 	}
 
 	return nil, nil
