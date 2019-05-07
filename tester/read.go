@@ -3,6 +3,7 @@ package tester
 import (
 	"github.com/pkg/errors"
 	"github.com/robojones/gqltest/tester/test"
+	"github.com/vektah/gqlparser/ast"
 	"github.com/vektah/gqlparser/parser"
 )
 
@@ -17,19 +18,15 @@ func (t *Tester) Read() ([]*test.Test, error) {
 			return nil, errors.Wrapf(err, "Test file %s", source.Name)
 		}
 
-		runes := []rune(source.Input)
 		ops := doc.Operations
 
-		for i, op := range ops {
-			isLast := i == len(ops)-1
-			var body string
-			if isLast {
-				body = string(runes[op.Position.Start:])
-			} else {
-				nextOp := ops[i+1]
-				body = string(runes[op.Position.Start:nextOp.Position.Start])
+		for _, op := range ops {
+			doc := &ast.QueryDocument{
+				Position:   doc.Position,
+				Operations: []*ast.OperationDefinition{op},
 			}
-			tests = append(tests, test.NewTest(op, body))
+
+			tests = append(tests, test.NewTest(doc))
 		}
 	}
 

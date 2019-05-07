@@ -18,14 +18,14 @@ func (t *Tester) Run() error {
 	}
 
 	for _, test := range tests {
-		log.Printf("sending test body: %s", test.Body)
+		log.Printf("sending test body: %s", test.Body())
 		v := request.NewVariables()
-		p := request.NewPayload("Test", test.Body, v)
+		p := request.NewPayload("Test", test.Body(), v)
 		r := request.NewRequest(t.config, p)
 		_, err := request.Send(r)
 
 		if err != nil {
-			return errors.Wrap(err, test.Operation.Position.Src.Name)
+			return errors.Wrap(err, test.Operation().Position.Src.Name)
 		}
 
 		test.Verify(r)
