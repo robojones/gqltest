@@ -6,29 +6,38 @@ import (
 	"github.com/vektah/gqlparser/ast"
 )
 
-func (e *Test) ParseExpectations() error {
-	rootSelections := e.Operation.SelectionSet
+func (t *Test) ParseExpectations() error {
+	rootSelections := t.Document.Operations[0].SelectionSet
 
-	err := eachField(rootSelections, func(path []string, field *ast.Field) error {
-		for _, directive := range field.Directives {
-			exp, err := expectation.FromDirective(path, directive)
-
-			if err != nil {
-				return err
-			}
-
-			e.Expectations = append(e.Expectations, exp)
-			e.Directives = append(e.Directives, directive.Position)
-		}
-
-		return nil
-	}, []string{})
+	err := t.parseEachField(rootSelections, []string{})
 
 	return err
 }
 
-// eachSelection iterates through all selections recursively
-func eachField(set ast.SelectionSet, fn func(path []string, field *ast.Field) error, path []string) error {
+func (t *Test) parseField(path []string, field *ast.Field) error {
+	var unknown ast.DirectiveList
+
+	for _, directive := range field.Directives {
+		exp, err := expectation.FromDirective(path, directive)
+
+		if err != nil {
+			return err
+		}
+
+		if exp == nil {
+			unknown = append(unknown, directive)
+		} else {
+			t.Expectations = append(t.Expectations, exp)
+		}
+
+	}
+
+	field.Directives = unknown
+
+	return nil
+}
+
+func (t *Test) parseEachField(set ast.SelectionSet, path []string) error {
 	for _, selection := range set {
 		field, isField := selection.(*ast.Field)
 		if !isField {
@@ -37,11 +46,11 @@ func eachField(set ast.SelectionSet, fn func(path []string, field *ast.Field) er
 
 		path = append(path, field.Alias)
 
-		if err := fn(path, field); err != nil {
+		if err := t.parseField(path, field); err != nil {
 			return err
 		}
 
-		if err := eachField(field.SelectionSet, fn, path); err != nil {
+		if err := t.parseEachField(field.SelectionSet, path); err != nil {
 			return err
 		}
 

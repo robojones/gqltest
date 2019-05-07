@@ -10,7 +10,7 @@ func (t *Test) Verify(result request.Result) {
 		err := exp.Check(result)
 
 		if err != nil {
-			testErr := testerror.NewTestError(err, t.Operation, exp.Directive())
+			testErr := testerror.NewTestError(err, t.Document.Operations[0], exp.Directive())
 			t.Errors = append(t.Errors, testErr)
 		}
 	}

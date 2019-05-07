@@ -1,18 +1,15 @@
 package test
 
 import (
+	"github.com/pkg/errors"
 	"github.com/robojones/gqltest/tester/expectation"
 	"github.com/robojones/gqltest/tester/testerror"
 	"github.com/vektah/gqlparser/ast"
 )
 
 type Test struct {
-	Body string
-
-	// Operation for the test.
-	Operation *ast.OperationDefinition
-
-	Directives []*ast.Position
+	// GraphQL AST for the test.
+	Document *ast.QueryDocument
 
 	// Expectations for the request result.
 	Expectations []expectation.Expectation
@@ -22,9 +19,16 @@ type Test struct {
 	Success bool
 }
 
-func NewTest(operation *ast.OperationDefinition, body string) *Test {
+func NewTest(doc *ast.QueryDocument) *Test {
+	if doc == nil {
+		panic(errors.New("doc must not be nil"))
+	}
+
+	if len(doc.Operations) != 1 {
+		panic(errors.New("test must contain exactly one operation"))
+	}
+
 	return &Test{
-		Body:      body,
-		Operation: operation,
+		Document: doc,
 	}
 }
