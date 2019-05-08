@@ -3,16 +3,12 @@
 package main
 
 import (
-	"flag"
 	"github.com/robojones/gqltest/config"
 	"log"
 )
 
 func main() {
-	flag.Parse()
-	testdir := flag.Arg(0)
-
-	t, err := InitTester(config.WD(testdir))
+	t, err := InitTester(config.WorkinDirectoryName(""))
 
 	if err != nil {
 		log.Fatal(err)

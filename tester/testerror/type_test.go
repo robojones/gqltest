@@ -12,7 +12,7 @@ func TestNewTypeError(t *testing.T) {
 		expected = "Object"
 		actual   = "Boolean"
 	)
-	var value = json.Value("true")
+	var value = json.Value(t, "true")
 
 	e := NewTypeError(value, expected)
 
@@ -26,7 +26,7 @@ func TestTypeError_Error(t *testing.T) {
 		expected = "Object"
 		actual   = "Boolean"
 	)
-	var value = json.Value("true")
+	var value = json.Value(t, "true")
 
 	e := NewTypeError(value, expected)
 

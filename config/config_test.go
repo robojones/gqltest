@@ -13,7 +13,7 @@ func TestNewConfig(t *testing.T) {
 
 	tempdir.File(t, dir, ConfigFileName, testConfigContent)
 
-	c, err := NewConfig(WD(dir))
+	c, err := NewConfig(WorkinDirectoryName(dir))
 
 	assert.NilError(t, err)
 	assert.Equal(t, c.Endpoint(), testEndpoint)

@@ -2,13 +2,15 @@ package json
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
+	"gotest.tools/assert"
+	"testing"
 )
 
-func Value(s string) interface{} {
+func Value(t *testing.T, s string) interface{} {
+	t.Helper()
+
 	v := new(interface{})
-	if err := json.Unmarshal([]byte(s), v); err != nil {
-		panic(errors.WithStack(err))
-	}
+	assert.NilError(t, json.Unmarshal([]byte(s), v))
+
 	return *v
 }

@@ -7,10 +7,10 @@ import (
 )
 
 func TestDetectType(t *testing.T) {
-	assert.Equal(t, DetectType(json.Value("true")), "Boolean")
-	assert.Equal(t, DetectType(json.Value("10")), "Number")
-	assert.Equal(t, DetectType(json.Value("5.5")), "Number")
-	assert.Equal(t, DetectType(json.Value("{}")), "Object")
-	assert.Equal(t, DetectType(json.Value("[]")), "Array")
-	assert.Equal(t, DetectType(json.Value("null")), "null")
+	assert.Equal(t, DetectType(json.Value(t, "true")), "Boolean")
+	assert.Equal(t, DetectType(json.Value(t, "10")), "Number")
+	assert.Equal(t, DetectType(json.Value(t, "5.5")), "Number")
+	assert.Equal(t, DetectType(json.Value(t, "{}")), "Object")
+	assert.Equal(t, DetectType(json.Value(t, "[]")), "Array")
+	assert.Equal(t, DetectType(json.Value(t, "null")), "null")
 }
