@@ -26,7 +26,13 @@ func (t *Tester) Read() ([]*test.Test, error) {
 				Operations: []*ast.OperationDefinition{op},
 			}
 
-			tests = append(tests, test.NewTest(doc))
+			test := test.NewTest(doc)
+
+			if err := test.ParseExpectations(); err != nil {
+				return nil, err
+			}
+
+			tests = append(tests, test)
 		}
 	}
 

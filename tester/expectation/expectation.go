@@ -37,7 +37,8 @@ func FromDirective(path []string, directive *ast.Directive) (Expectation, error)
 			break
 		}
 
-		return NewValueExpectation(directive, path, v), nil
+		dataPath := append([]string{"data"}, path...)
+		return NewValueExpectation(directive, dataPath, v), nil
 	}
 
 	return nil, nil

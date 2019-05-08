@@ -21,14 +21,20 @@ func (t *Tester) Run() error {
 		log.Printf("sending test body: %s", test.Body())
 		v := request.NewVariables()
 		p := request.NewPayload("Test", test.Body(), v)
-		r := request.NewRequest(t.config, p)
-		_, err := request.Send(r)
+		req := request.NewRequest(t.config, p)
+		res, err := request.Send(req)
 
 		if err != nil {
 			return errors.Wrap(err, test.Operation().Position.Src.Name)
 		}
 
-		test.Verify(r)
+		test.Verify(res)
+
+		if len(test.Errors) != 0 {
+			for _, err := range test.Errors {
+				log.Println(err.Error())
+			}
+		}
 	}
 
 	log.Printf("successfully ran %d operations against %s.", len(tests), t.config.Endpoint())
