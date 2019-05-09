@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 type staticJSONHandler struct {
@@ -35,7 +36,7 @@ func TestSend(t *testing.T) {
 	defer server.Close()
 
 	p := NewPayload("test something", "query { some }", nil)
-	r, err := Send(server.URL, p)
+	r, err := Send(server.URL, p, time.Second * 10)
 	assert.NilError(t, err)
 
 	bod, err := json.Marshal(r)
