@@ -21,8 +21,8 @@ func (t *Tester) Run() error {
 		log.Printf("sending test body: %s", test.Body())
 		v := request.NewVariables()
 		p := request.NewPayload("Test", test.Body(), v)
-		req := request.NewRequest(t.config, p)
-		res, err := request.Send(req)
+
+		res, err := request.Send(t.config.Endpoint(), p)
 
 		if err != nil {
 			return errors.Wrap(err, test.Operation().Position.Src.Name)
