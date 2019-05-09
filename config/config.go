@@ -8,7 +8,7 @@ import (
 const ConfigFileName = "gqltest.yml"
 const DefaultTestRoot = "tests"
 
-type WD string
+type WorkinDirectoryName string
 
 // Config
 type Config struct {
@@ -16,7 +16,7 @@ type Config struct {
 	data *configData
 }
 
-func NewConfig(wd WD) (*Config, error) {
+func NewConfig(wd WorkinDirectoryName) (*Config, error) {
 	d, err := readConfigData(wd)
 
 	if err != nil {
@@ -24,7 +24,7 @@ func NewConfig(wd WD) (*Config, error) {
 	}
 
 	return &Config{
-		wd: string(wd),
+		wd:   string(wd),
 		data: d,
 	}, nil
 }
@@ -33,6 +33,6 @@ func (c *Config) Endpoint() string {
 	return c.data.Endpoint
 }
 
-func (c *Config) TestRoot()string {
+func (c *Config) TestRoot() string {
 	return path.Join(c.wd, c.data.TestRoot)
 }

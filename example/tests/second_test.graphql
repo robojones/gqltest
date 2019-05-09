@@ -1,3 +1,7 @@
 query Test {
     hello
 }
+
+query ThirdTest {
+    hello
+}

@@ -11,7 +11,7 @@ import (
 	"github.com/robojones/gqltest/tester"
 )
 
-func InitTester(testdir config.WD) (*tester.Tester, error) {
+func InitTester(testdir config.WorkinDirectoryName) (*tester.Tester, error) {
 	wire.Build(
 		config.Provider,
 		tester.Provider,
@@ -29,4 +29,3 @@ func InitTestServer() (*server.Server, error) {
 
 	return nil, nil
 }
-

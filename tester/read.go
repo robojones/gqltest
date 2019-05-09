@@ -2,24 +2,39 @@ package tester
 
 import (
 	"github.com/pkg/errors"
+	"github.com/robojones/gqltest/tester/test"
 	"github.com/vektah/gqlparser/ast"
 	"github.com/vektah/gqlparser/parser"
 )
 
-func (t *Tester) Read() ([]*ast.OperationDefinition, error) {
+func (t *Tester) Read() ([]*test.Test, error) {
 	files := t.reader.Read(t.config.TestRoot())
 
-	var ops []*ast.OperationDefinition
+	var tests []*test.Test
 
 	for _, source := range files {
 		doc, err := parser.ParseQuery(source)
-
 		if err != nil {
 			return nil, errors.Wrapf(err, "Test file %s", source.Name)
 		}
 
-		ops = append(ops, doc.Operations...)
+		ops := doc.Operations
+
+		for _, op := range ops {
+			doc := &ast.QueryDocument{
+				Position:   doc.Position,
+				Operations: []*ast.OperationDefinition{op},
+			}
+
+			test := test.NewTest(doc)
+
+			if err := test.ParseExpectations(); err != nil {
+				return nil, err
+			}
+
+			tests = append(tests, test)
+		}
 	}
 
-	return ops, nil
+	return tests, nil
 }

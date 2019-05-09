@@ -9,6 +9,8 @@ import (
 
 // Create a new directory and return its path.
 func Create(t *testing.T) string {
+	t.Helper()
+
 	dir, err := ioutil.TempDir(os.TempDir(), "gqltest_")
 	assert.NilError(t, err)
 	return dir
@@ -16,6 +18,8 @@ func Create(t *testing.T) string {
 
 // Remove a directory and its contents.
 func Remove(t *testing.T, dir string) {
+	t.Helper()
+
 	err := os.RemoveAll(dir)
 	assert.NilError(t, err)
 }

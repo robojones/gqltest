@@ -20,8 +20,8 @@ const (
 
 var (
 	goExecPath = path.Join(runtime.GOROOT(), "bin/go")
-	args       = []string{"run", "."}
-	testArgs   = append(args, exampleDir)
+	install    = []string{"install", "."}
+	command    = "gqltest"
 )
 
 func TestMain(m *testing.M) {
@@ -49,6 +49,18 @@ func TestMain(m *testing.M) {
 		}
 	}()
 
+	inst := exec.Command(goExecPath, install...)
+	inst.Env = os.Environ()
+	b, err := inst.CombinedOutput()
+
+	if err != nil {
+		panic(errors.Errorf(
+			"error during installation \"%s\"\n-- output --\n%s-- end --",
+			err.Error(),
+			string(b),
+		))
+	}
+
 	m.Run()
 
 	log.Printf("close test server")
@@ -59,7 +71,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestCLI(t *testing.T) {
-	c := exec.Command(goExecPath, testArgs...)
+	c := exec.Command(command)
+	c.Dir = exampleDir
 	c.Env = os.Environ()
 
 	b, err := c.CombinedOutput()

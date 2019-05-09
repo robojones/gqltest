@@ -6,7 +6,7 @@ import (
 	"path"
 )
 
-func readConfigData(wd WD) (*configData, error) {
+func readConfigData(wd WorkinDirectoryName) (*configData, error) {
 
 	p := path.Join(string(wd), ConfigFileName)
 	b, err := ioutil.ReadFile(p)

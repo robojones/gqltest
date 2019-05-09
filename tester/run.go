@@ -2,7 +2,6 @@ package tester
 
 import (
 	"github.com/pkg/errors"
-	"github.com/robojones/gqltest/source"
 	"github.com/robojones/gqltest/tester/request"
 	"log"
 )
@@ -19,13 +18,22 @@ func (t *Tester) Run() error {
 	}
 
 	for _, test := range tests {
+		log.Printf("sending test body: %s", test.Body())
 		v := request.NewVariables()
-		p := request.NewPayload("Test", source.Content(test.Position), v)
-		r := request.NewRequest(t.config, p)
-		_, err := request.Send(r)
+		p := request.NewPayload("Test", test.Body(), v)
+
+		res, err := request.Send(t.config.Endpoint(), p)
 
 		if err != nil {
-			return errors.Wrapf(err, "%s: %s", test.Position.Src.Name, test.Name)
+			return errors.Wrap(err, test.Operation().Position.Src.Name)
+		}
+
+		test.Verify(res)
+
+		if len(test.Errors) != 0 {
+			for _, err := range test.Errors {
+				log.Println(err.Error())
+			}
 		}
 	}
 

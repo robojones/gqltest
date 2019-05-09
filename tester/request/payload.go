@@ -1,5 +1,10 @@
 package request
 
+import (
+	"bytes"
+	"encoding/json"
+)
+
 type Variables map[string]interface{}
 
 func NewVariables() Variables {
@@ -18,4 +23,14 @@ func NewPayload(operation string, query string, vars Variables) *Payload {
 		Query:         query,
 		Variables:     vars,
 	}
+}
+
+func (p *Payload) Body() (*bytes.Reader, error) {
+	b, err := json.Marshal(p)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return bytes.NewReader(b), nil
 }
