@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/caarlos0/env"
+	"github.com/pkg/errors"
 	"net"
 	"net/http"
 	"time"
@@ -12,9 +13,9 @@ type Config struct {
 }
 
 type Server struct {
-	closed bool
+	closed   bool
 	listener net.Listener
-	http *http.Server
+	http     *http.Server
 }
 
 func (s *Server) Serve() error {
@@ -22,19 +23,11 @@ func (s *Server) Serve() error {
 }
 
 func (s *Server) Listen() error {
-	if s.closed {
-		return http.ErrServerClosed
-	}
+	err := s.http.ListenAndServe()
 
-	addr := s.http.Addr
-
-	ln, err := net.Listen("tcp", addr)
-	s.listener = ln
-
-	if err != nil {
+	if err != http.ErrServerClosed {
 		return err
 	}
-
 	return nil
 }
 
@@ -42,10 +35,13 @@ func (s *Server) Close() error {
 	return s.http.Close()
 }
 
-func NewConfig() (*Config, error) {
+func NewConfig() *Config {
 	config := &Config{}
 	err := env.Parse(config)
-	return config, err
+	if err != nil {
+		panic(errors.Wrap(err, "parse config for example server"))
+	}
+	return config
 }
 
 func NewServer(mux *http.ServeMux, config *Config) *Server {

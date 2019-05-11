@@ -21,11 +21,11 @@ func InitTester(testdir config.WorkinDirectoryName) (*tester.Tester, error) {
 	return nil, nil
 }
 
-func InitTestServer() (*server.Server, error) {
+func InitTestServer() *server.Server {
 	wire.Build(
 		server.Provider,
 		api.Provider,
 	)
 
-	return nil, nil
+	return nil
 }

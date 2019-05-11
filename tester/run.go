@@ -8,7 +8,7 @@ import (
 )
 
 func (t *Tester) Run() error {
-	tests, err := t.Read()
+	tests, err := t.read()
 
 	if err != nil {
 		return err

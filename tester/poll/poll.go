@@ -3,6 +3,7 @@ package poll
 import (
 	"github.com/pkg/errors"
 	"github.com/robojones/gqltest/tester/request"
+	"log"
 	"net"
 	"net/url"
 	"time"
@@ -36,6 +37,8 @@ func Poll(endpoint string, timeout time.Duration) error {
 		} else if !IsDialError(err) || IsTimeoutError(err) {
 			return errors.Wrap(err, "initial connect")
 		}
+
+		log.Printf("error is %s", err.Error())
 		time.Sleep(interval * time.Millisecond)
 	}
 }
