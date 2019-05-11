@@ -1,20 +1,34 @@
 package reader
 
 import (
+	"github.com/bmatcuk/doublestar"
 	"github.com/vektah/gqlparser/ast"
+	"os"
 )
 
 type AllSources = map[string]*ast.Source
 
-// read all tests.
-func (r *Reader) Read(testdir string) map[string]*ast.Source {
+// Read all files matching the glob.
+func (r *Reader) Read(glob string) map[string]*ast.Source {
 	var (
 		s   = make(AllSources)
-		dir = r.ReadDir(testdir)
+		files, err = doublestar.Glob(glob)
 	)
 
-	for _, name := range dir.Files {
-		s[name] = r.ReadSource(name)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, name := range files {
+		info, err := os.Stat(name)
+
+		if err != nil {
+			panic(err)
+		}
+
+		if !info.IsDir() {
+			s[name] = r.ReadSource(name)
+		}
 	}
 
 	return s

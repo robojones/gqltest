@@ -8,7 +8,7 @@ import (
 )
 
 func (t *Tester) read() ([]*test.Test, error) {
-	files := t.reader.Read(t.config.TestRoot())
+	files := t.reader.Read(t.config.TestGlob())
 
 	var tests []*test.Test
 
