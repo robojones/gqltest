@@ -67,15 +67,20 @@ func TestCLI(t *testing.T) {
 }
 
 func TestInitTesterErrorConfigMissing(t *testing.T) {
-	s := startTestServer(t)
-	defer func() {
-		assert.NilError(t, s.Close())
-	}()
-
 	d := tempdir.Create(t)
 	defer tempdir.Remove(t, d)
 
 	_, e := InitTester(config.WorkinDirectoryName(d))
 
 	assert.Assert(t, os.IsNotExist(errors.Cause(e)))
+}
+
+func TestInitTesterErrorEndpointMissing(t *testing.T) {
+	d := tempdir.Create(t)
+	defer tempdir.Remove(t, d)
+
+	tempdir.File(t, d, "gqltest.yml", "")
+
+	_, e := InitTester(config.WorkinDirectoryName(d))
+	assert.Equal(t, errors.Cause(e), config.VerificationError)
 }
