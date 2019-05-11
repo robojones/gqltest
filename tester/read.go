@@ -7,7 +7,7 @@ import (
 	"github.com/vektah/gqlparser/parser"
 )
 
-func (t *Tester) Read() ([]*test.Test, error) {
+func (t *Tester) read() ([]*test.Test, error) {
 	files := t.reader.Read(t.config.TestRoot())
 
 	var tests []*test.Test
@@ -26,13 +26,13 @@ func (t *Tester) Read() ([]*test.Test, error) {
 				Operations: []*ast.OperationDefinition{op},
 			}
 
-			test := test.NewTest(doc)
+			t := test.NewTest(doc)
 
-			if err := test.ParseExpectations(); err != nil {
+			if err := t.ParseExpectations(); err != nil {
 				return nil, err
 			}
 
-			tests = append(tests, test)
+			tests = append(tests, t)
 		}
 	}
 

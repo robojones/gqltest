@@ -4,18 +4,23 @@ import (
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 const contentType = "text/json"
 
-func Send(endpoint string, r *Payload) (Result, error) {
+func Send(endpoint string, r *Payload, timeout time.Duration) (Result, error) {
 	b, err := r.Body()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "stringify body")
 	}
 
-	response, err := http.Post(endpoint, contentType, b)
+	client := http.Client{
+		Timeout: timeout,
+	}
+
+	response, err := client.Post(endpoint, contentType, b)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "post request")

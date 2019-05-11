@@ -6,7 +6,7 @@ import (
 
 type AllSources = map[string]*ast.Source
 
-// Read all tests.
+// read all tests.
 func (r *Reader) Read(testdir string) map[string]*ast.Source {
 	var (
 		s   = make(AllSources)

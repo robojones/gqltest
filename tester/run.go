@@ -2,12 +2,13 @@ package tester
 
 import (
 	"github.com/pkg/errors"
+	"github.com/robojones/gqltest/tester/poll"
 	"github.com/robojones/gqltest/tester/request"
 	"log"
 )
 
 func (t *Tester) Run() error {
-	tests, err := t.Read()
+	tests, err := t.read()
 
 	if err != nil {
 		return err
@@ -17,12 +18,16 @@ func (t *Tester) Run() error {
 		return errors.New("No tests found.")
 	}
 
+	if err := poll.Poll(t.config.Endpoint(), t.config.StartTimeout()); err != nil {
+		return err
+	}
+
 	for _, test := range tests {
 		log.Printf("sending test body: %s", test.Body())
 		v := request.NewVariables()
 		p := request.NewPayload("Test", test.Body(), v)
 
-		res, err := request.Send(t.config.Endpoint(), p)
+		res, err := request.Send(t.config.Endpoint(), p, t.config.TestTimeout())
 
 		if err != nil {
 			return errors.Wrap(err, test.Operation().Position.Src.Name)

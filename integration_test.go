@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"github.com/pkg/errors"
+	"github.com/robojones/gqltest/config"
+	"github.com/robojones/gqltest/example/server"
+	"github.com/robojones/gqltest/test_util/tempdir"
 	"gotest.tools/assert"
-	"log"
-	"net/http"
 	"os"
 	"os/exec"
 	"path"
@@ -24,59 +24,63 @@ var (
 	command    = "gqltest"
 )
 
-func TestMain(m *testing.M) {
-	if err := os.Setenv("PORT", testPort); err != nil {
-		panic(errors.Wrap(err, "set PORT env for test server"))
-	}
-
-	s, err := InitTestServer()
-
-	if err != nil {
-		panic(errors.Wrap(err, "initialize test server"))
-	}
-
-	if err := s.Listen(); err != nil {
-		panic(errors.Wrap(err, "start test server"))
-	}
-
-	log.Printf("test server online")
-
-	go func() {
-		log.Printf("serve")
-		if err := s.Serve(); err != http.ErrServerClosed {
-			log.Printf("server closed")
-			panic(errors.Wrap(err, "serve test server"))
-		}
-	}()
-
+func installCLI(t *testing.T) {
+	t.Helper()
 	inst := exec.Command(goExecPath, install...)
 	inst.Env = os.Environ()
 	b, err := inst.CombinedOutput()
+	assert.NilError(t, errors.Wrapf(err, "Install CLI\n--- output ---\n%s--- end ---\n", b))
+}
 
-	if err != nil {
-		panic(errors.Errorf(
-			"error during installation \"%s\"\n-- output --\n%s-- end --",
-			err.Error(),
-			string(b),
-		))
+func startTestServer(t *testing.T) *server.Server {
+	t.Helper()
+
+	if err := os.Setenv("PORT", testPort); err != nil {
+		assert.NilError(t, errors.Wrap(err, "set PORT env for test server"))
+	}
+	s := InitTestServer()
+	if err := os.Unsetenv("PORT"); err != nil {
+		assert.NilError(t, errors.Wrap(err, "unset PORT env for test server"))
 	}
 
-	m.Run()
+	go func() {
+		assert.NilError(t, s.Listen())
+	}()
 
-	log.Printf("close test server")
-
-	if err := s.Close(); err != nil {
-		panic(errors.Wrap(err, "close test server"))
-	}
+	return s
 }
 
 func TestCLI(t *testing.T) {
+	s := startTestServer(t)
+	defer func() {
+		assert.NilError(t, s.Close())
+	}()
+
+	installCLI(t)
+
 	c := exec.Command(command)
 	c.Dir = exampleDir
 	c.Env = os.Environ()
-
 	b, err := c.CombinedOutput()
 
-	fmt.Printf("-- Test output --\n%s\n-- end --\n", string(b))
-	assert.NilError(t, err)
+	assert.NilError(t, errors.Wrapf(err, "-- Test output --\n%s\n-- end --\n", string(b)))
+}
+
+func TestInitTesterErrorConfigMissing(t *testing.T) {
+	d := tempdir.Create(t)
+	defer tempdir.Remove(t, d)
+
+	_, e := InitTester(config.WorkinDirectoryName(d))
+
+	assert.Assert(t, os.IsNotExist(errors.Cause(e)))
+}
+
+func TestInitTesterErrorEndpointMissing(t *testing.T) {
+	d := tempdir.Create(t)
+	defer tempdir.Remove(t, d)
+
+	tempdir.File(t, d, "gqltest.yml", "")
+
+	_, e := InitTester(config.WorkinDirectoryName(d))
+	assert.Equal(t, errors.Cause(e), config.VerificationError)
 }
