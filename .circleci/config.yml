@@ -15,7 +15,7 @@ jobs:
           command: go generate
       - run:
           name: Test
-          command: go test ./...
+          command: GQLTEST_BRANCH=$CIRCLE_BRANCH && go test ./...
 workflows:
   version: 2
   build:
