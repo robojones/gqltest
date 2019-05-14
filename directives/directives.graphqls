@@ -1,5 +1,3 @@
-union DeepValue = String | Int | Float | Boolean | ID
-
 directive @expectString(equal: String!) on FIELD
 directive @expectID(equal: ID!) on FIELD
 directive @expectInt(equal: Int!) on FIELD

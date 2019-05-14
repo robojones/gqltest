@@ -50,7 +50,7 @@ func Get() (*ast.Source, error) {
 	b, err := ioutil.ReadAll(resp.Body)
 
 	return &ast.Source{
-		Name:  URLTemplate,
+		Name:  url,
 		Input: string(b),
 	}, err
 }
