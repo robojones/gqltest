@@ -39,6 +39,5 @@ func TestGetStatusError(t *testing.T) {
 	_, err := Get()
 
 	stErr := errors.Cause(err).(*StatusError)
-	assert.Equal(t, stErr.statusCode, 404)
 	assert.Equal(t, stErr.status, "404 Not Found")
 }

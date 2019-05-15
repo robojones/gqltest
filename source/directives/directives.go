@@ -38,7 +38,6 @@ func Get() (*ast.Source, error) {
 
 	if resp.StatusCode != 200 {
 		return nil, errors.Wrapf(&StatusError{
-			statusCode: resp.StatusCode,
 			status:     resp.Status,
 			url:        url,
 		},

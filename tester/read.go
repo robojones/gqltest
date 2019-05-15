@@ -21,12 +21,16 @@ func (t *Tester) read() ([]*test.Test, error) {
 		ops := doc.Operations
 
 		for _, op := range ops {
-			doc := &ast.QueryDocument{
+			query := &ast.QueryDocument{
 				Position:   doc.Position,
 				Operations: []*ast.OperationDefinition{op},
 			}
 
-			t := test.NewTest(doc)
+			if err := t.validator.Validate(query); err != nil {
+				return nil, err
+			}
+
+			t := test.NewTest(query)
 
 			if err := t.ParseExpectations(); err != nil {
 				return nil, err
