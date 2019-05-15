@@ -16,5 +16,4 @@ func TestReadConfigData(t *testing.T) {
 
 	assert.NilError(t, err)
 	assert.Equal(t, c.Endpoint, testEndpoint)
-	assert.Equal(t, c.TestRoot, testTestRoot)
 }

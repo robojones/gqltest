@@ -5,7 +5,6 @@ import (
 	"github.com/robojones/gqltest/tester/request"
 	"github.com/robojones/gqltest/tester/testerror"
 	"github.com/vektah/gqlparser/ast"
-	"log"
 	"reflect"
 )
 
@@ -23,8 +22,6 @@ func NewValueExpectation(
 	if len(path) < 1 {
 		panic(errors.New("Path for expectation must contain at least one element."))
 	}
-
-	log.Printf("Value expectation: %#v", value)
 
 	return &ValueExpectation{
 		directive: directive,
@@ -63,8 +60,6 @@ func (exp *ValueExpectation) Check(result request.Result) error {
 		compErr := testerror.NewComparisonError(exp.value, actual)
 		return testerror.NewExpectationError(compErr, exp.path, result)
 	}
-
-	log.Printf("actual %#v, expected: %#v", actual, exp.value)
 
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/robojones/gqltest/tester/request"
 	"github.com/vektah/gqlparser/ast"
+	"regexp"
 )
 
 type Expectation interface {
@@ -13,13 +14,20 @@ type Expectation interface {
 }
 
 func FromDirective(path []string, directive *ast.Directive) (Expectation, error) {
-	switch directive.Name {
-	case "expect":
-		if len(directive.Arguments) < 1 {
-			return nil, errors.New("missing argument v")
-		}
-		value := directive.Arguments[0].Value
+	const valuePattern = "^expect(String|ID|Int|Float|Boolean)$"
 
+	matched, err := regexp.MatchString(valuePattern, directive.Name)
+	if err != nil {
+		panic(errors.WithStack(err))
+	}
+
+	if matched {
+		if len(directive.Arguments) < 1 {
+			return nil, errors.New("missing argument equal")
+		}
+
+		// must be "equal"
+		value := directive.Arguments[0].Value
 		raw := value.Raw
 		var v interface{}
 
@@ -29,14 +37,13 @@ func FromDirective(path []string, directive *ast.Directive) (Expectation, error)
 		case ast.FloatValue, ast.IntValue, ast.BooleanValue, ast.ListValue, ast.ObjectValue, ast.NullValue:
 			err := json.Unmarshal([]byte(raw), &v)
 			if err != nil {
-				panic(errors.Wrap(err, "parsing argument value"))
+				panic(errors.Wrap(err, "parse argument value"))
 			}
 			break
 		case ast.StringValue, ast.EnumValue:
 			v = raw
 			break
 		}
-
 		dataPath := append([]string{"data"}, path...)
 		return NewValueExpectation(directive, dataPath, v), nil
 	}

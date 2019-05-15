@@ -3,13 +3,15 @@ package reader
 import (
 	"github.com/robojones/gqltest/test_util/tempdir"
 	"gotest.tools/assert"
+	"path"
 	"testing"
 )
 
 func TestReader_Read(t *testing.T) {
 	var (
-		files = []string{"a.txt", "b.json", "c.graphql"}
-		dirs  = []string{"d", "e", "f"}
+		files    = []string{"a.txt", "b.graphql", "c.graphql"}
+		matching = files[1:]
+		dirs     = []string{"d"}
 	)
 
 	dir := tempdir.Create(t)
@@ -25,10 +27,15 @@ func TestReader_Read(t *testing.T) {
 
 	reader := NewReader()
 
-	r := reader.Read(dir)
+	r := reader.Read(path.Join(dir, "*.graphql"))
 
-	for _, file := range files {
+	for _, file := range matching {
 		_, ok := r[file]
-		assert.Assert(t, ok, "file %s not in map")
+		assert.Assert(t, ok, "file %s not in map", file)
+	}
+
+	for _, dir := range dirs {
+		_, ok := r[dir]
+		assert.Assert(t, !ok, "dir %s in map, but it shouldn' be there.", dir)
 	}
 }

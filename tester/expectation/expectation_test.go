@@ -9,7 +9,8 @@ import (
 	"testing"
 )
 
-func ValueDirective(directive string, params map[string]string) *ast.Directive {
+func fieldDirective(t *testing.T, directive string, params map[string]string) *ast.Directive {
+	t.Helper()
 	var args []string
 
 	for key, val := range params {
@@ -33,9 +34,9 @@ func ValueDirective(directive string, params map[string]string) *ast.Directive {
 	return op.Directives[0]
 }
 
-func TestFromDirective(t *testing.T) {
-	directive := ValueDirective("expect", map[string]string{
-		"v": "wazzup",
+func TestFromDirective_MatchValueDirective(t *testing.T) {
+	directive := fieldDirective(t, "expectString", map[string]string{
+		"equal": "wazzup",
 	})
 
 	exp, err := FromDirective([]string{"asdf"}, directive)
@@ -43,4 +44,16 @@ func TestFromDirective(t *testing.T) {
 	assert.NilError(t, err)
 	e := exp.(*ValueExpectation)
 	assert.Equal(t, e.value.(string), "wazzup")
+}
+
+func TestFromDirective_NoMatch(t *testing.T) {
+	// expect doesn't match any directive
+	directive := fieldDirective(t, "expect", map[string]string{
+		"equal": "wazzup",
+	})
+
+	exp, err := FromDirective([]string{"asdf"}, directive)
+
+	assert.NilError(t, err)
+	assert.Assert(t, exp == nil)
 }

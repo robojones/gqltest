@@ -1,0 +1,5 @@
+directive @expectString(equal: String!) on FIELD
+directive @expectID(equal: ID!) on FIELD
+directive @expectInt(equal: Int!) on FIELD
+directive @expectFloat(equal: Float!) on FIELD
+directive @expectBoolean(equal: Boolean!) on FIELD

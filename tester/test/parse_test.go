@@ -11,7 +11,7 @@ import (
 
 var source = &ast.Source{
 	Name:  "testSource.graphql",
-	Input: "query { hello @expect(v: true) }",
+	Input: "query { hello @expectBoolean(v: true) }",
 }
 
 func getTestDoc() *ast.QueryDocument {

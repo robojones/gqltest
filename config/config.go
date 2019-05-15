@@ -2,12 +2,11 @@ package config
 
 import (
 	"github.com/pkg/errors"
-	"path"
 	"time"
 )
 
 const (
-	ConfigFileName        = "gqltest.yml"
+	ConfigFileName = "gqltest.yml"
 )
 
 type WorkinDirectoryName string
@@ -35,8 +34,16 @@ func (c *Config) Endpoint() string {
 	return c.data.Endpoint
 }
 
-func (c *Config) TestRoot() string {
-	return path.Join(c.wd, c.data.TestRoot)
+func (c *Config) SchemaGlob() string {
+	return c.data.SchemaGlob
+}
+
+func (c *Config) TestGlob() string {
+	return c.data.TestGlob
+}
+
+func (c *Config) DirectivesFile() string {
+	return c.data.DirectivesFile
 }
 
 func (c *Config) StartTimeout() time.Duration {
