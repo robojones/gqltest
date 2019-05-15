@@ -15,6 +15,9 @@ type configData struct {
 	SchemaGlob string `yaml:"schema"`
 	// TestGlob matches the test file names.
 	TestGlob string `yaml:"tests"`
+	// DirectiveFile specifies the path to the file which contains the directives.
+	// Contents be updated automatically when gqltest is run.
+	DirectivesFile string `yaml:"directives"`
 	// Initial timeout until the endpoint has to be online (in milliseconds).
 	StartTimeout int64 `yaml:"startTimeout"`
 	// Timeout for the tests.

@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	ConfigFileName        = "gqltest.yml"
+	ConfigFileName = "gqltest.yml"
 )
 
 type WorkinDirectoryName string
@@ -40,6 +40,10 @@ func (c *Config) SchemaGlob() string {
 
 func (c *Config) TestGlob() string {
 	return c.data.TestGlob
+}
+
+func (c *Config) DirectivesFile() string {
+	return c.data.DirectivesFile
 }
 
 func (c *Config) StartTimeout() time.Duration {
