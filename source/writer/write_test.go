@@ -22,7 +22,7 @@ func TestWrite(t *testing.T) {
 		Input: sourceContent,
 	}
 
-	assert.NilError(t, Write(s))
+	Write(s)
 
 	r := reader.NewReader()
 	actual := r.ReadSource(sourceName)

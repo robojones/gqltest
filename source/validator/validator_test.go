@@ -48,10 +48,15 @@ query {
 
 type testConfig struct {
 	schemaGlob string
+	directives string
 }
 
 func (c *testConfig) SchemaGlob() string {
 	return c.schemaGlob
+}
+
+func (c *testConfig) DirectivesFile() string {
+	return c.directives
 }
 
 func TestNewValidator(t *testing.T) {
@@ -76,6 +81,27 @@ func TestNewValidator(t *testing.T) {
 
 	err = validator.Validate(doc)
 	assert.NilError(t, err)
+}
+
+func TestNewValidatorWriteDirectives(t *testing.T) {
+	dir := tempdir.Create(t)
+	defer tempdir.Remove(t, dir)
+
+	directives := path.Join(dir, "directives.graphql")
+
+	r := reader.NewReader()
+	c := &testConfig{
+		schemaGlob: path.Join(dir, graphqlsGlob),
+		directives: directives,
+	}
+
+	_, err := NewValidator(c, r)
+	assert.NilError(t, err)
+
+	d := r.ReadSource(directives)
+
+	assert.Equal(t, d.Name, directives)
+	assert.Assert(t, d.Input != "")
 }
 
 func TestNewValidatorInvalidQuery(t *testing.T) {

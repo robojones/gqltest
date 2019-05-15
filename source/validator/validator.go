@@ -3,6 +3,7 @@ package validator
 import (
 	"github.com/robojones/gqltest/source/directives"
 	"github.com/robojones/gqltest/source/reader"
+	"github.com/robojones/gqltest/source/writer"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
 	"github.com/vektah/gqlparser/validator"
@@ -11,6 +12,7 @@ import (
 
 type ValidatorConfig interface {
 	SchemaGlob() string
+	DirectivesFile() string
 }
 
 type Validator struct {
@@ -29,7 +31,15 @@ func NewValidator(c ValidatorConfig, r *reader.Reader) (*Validator, error) {
 	if err != nil {
 		return nil, err
 	}
-	files = append(files, d)
+
+	if c.DirectivesFile() != "" {
+		d.Name = c.DirectivesFile()
+		writer.Write(d)
+	}
+
+	if _, containsDirectives := f[c.DirectivesFile()]; !containsDirectives {
+		files = append(files, d)
+	}
 
 	schema, gqlErr := gqlparser.LoadSchema(files...)
 	if gqlErr != nil {

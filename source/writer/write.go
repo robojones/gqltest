@@ -7,6 +7,10 @@ import (
 
 const WritePerm = 0644
 
-func Write(s *ast.Source) error {
-	return ioutil.WriteFile(s.Name, []byte(s.Input), WritePerm)
+func Write(s *ast.Source) {
+	err := ioutil.WriteFile(s.Name, []byte(s.Input), WritePerm)
+
+	if err != nil {
+		panic(err)
+	}
 }
