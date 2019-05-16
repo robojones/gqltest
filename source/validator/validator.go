@@ -1,9 +1,9 @@
 package validator
 
 import (
+	"github.com/robojones/gqltest/source"
 	"github.com/robojones/gqltest/source/directives"
 	"github.com/robojones/gqltest/source/reader"
-	"github.com/robojones/gqltest/source/writer"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
 	"github.com/vektah/gqlparser/validator"
@@ -34,7 +34,7 @@ func NewValidator(c ValidatorConfig, r *reader.Reader) (*Validator, error) {
 
 	if c.DirectivesFile() != "" {
 		d.Name = c.DirectivesFile()
-		writer.Write(d)
+		source.Write(d)
 	}
 
 	if _, containsDirectives := f[c.DirectivesFile()]; !containsDirectives {

@@ -2,6 +2,7 @@ package directives
 
 import (
 	"github.com/pkg/errors"
+	"github.com/robojones/gqltest/source"
 	"github.com/robojones/gqltest/test_util/testenv"
 	"gotest.tools/assert"
 	"testing"
@@ -38,6 +39,6 @@ func TestGetStatusError(t *testing.T) {
 
 	_, err := Get()
 
-	stErr := errors.Cause(err).(*StatusError)
+	stErr := errors.Cause(err).(*source.StatusError)
 	assert.Equal(t, stErr.status, "404 Not Found")
 }

@@ -3,6 +3,7 @@ package directives
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/robojones/gqltest/source"
 	"github.com/vektah/gqlparser/ast"
 	"io/ioutil"
 	"net/http"
@@ -37,9 +38,9 @@ func Get() (*ast.Source, error) {
 	}
 
 	if resp.StatusCode != 200 {
-		return nil, errors.Wrapf(&StatusError{
-			status:     resp.Status,
-			url:        url,
+		return nil, errors.Wrapf(&source.StatusError{
+			status: resp.Status,
+			url:    url,
 		},
 			"request directives for branch \"%s\"",
 			branch,
