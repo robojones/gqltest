@@ -1,6 +1,8 @@
 package graphql
 
-import "github.com/vektah/gqlparser/ast"
+import (
+	"github.com/vektah/gqlparser/ast"
+)
 
 func serializeFragment(frag *ast.FragmentDefinition, indent int) string {
 	return fragment +

@@ -1,4 +1,4 @@
-package reader
+package source
 
 import (
 	"github.com/pkg/errors"
@@ -17,21 +17,14 @@ func TestReader_ReadSource(t *testing.T) {
 	const body = "{}\n"
 	p := tempdir.File(t, dir, name, body)
 
-	reader := NewReader()
+	source, err := Read(p)
 
-	source := reader.ReadSource(p)
-
+	assert.NilError(t, err)
 	assert.Equal(t, source.Name, p)
 	assert.DeepEqual(t, source.Input, body)
 }
 
 func TestReader_ReadSource_Panic(t *testing.T) {
-	defer func() {
-		err := recover().(error)
-		assert.Assert(t, os.IsNotExist(errors.Cause(err)))
-	}()
-
-	reader := NewReader()
-
-	reader.ReadSource("fileDoesNotExist.json")
+	_, err := Read("fileDoesNotExist.json")
+	assert.Assert(t, os.IsNotExist(errors.Cause(err)))
 }

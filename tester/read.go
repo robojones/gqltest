@@ -2,20 +2,24 @@ package tester
 
 import (
 	"github.com/pkg/errors"
-	"github.com/robojones/gqltest/tester/test"
+	"github.com/robojones/gqltest/source"
+	"github.com/robojones/gqltest/test"
 	"github.com/vektah/gqlparser/ast"
 	"github.com/vektah/gqlparser/parser"
 )
 
 func (t *Tester) read() ([]*test.Test, error) {
-	files := t.reader.Read(t.config.TestGlob())
+	files, err := source.ReadAll(t.config.TestGlob())
+	if err != nil {
+		panic(errors.Wrap(err, "read tests"))
+	}
 
 	var tests []*test.Test
 
-	for _, source := range files {
-		doc, err := parser.ParseQuery(source)
+	for _, src := range files {
+		doc, err := parser.ParseQuery(src)
 		if err != nil {
-			return nil, errors.Wrapf(err, "Test file %s", source.Name)
+			return nil, errors.Wrapf(err, "Test file %s", src.Name)
 		}
 
 		ops := doc.Operations

@@ -2,7 +2,7 @@ package testerror
 
 import (
 	"fmt"
-	"github.com/robojones/gqltest/tester/json"
+	"github.com/robojones/gqltest/graphql/json"
 )
 
 type ComparisonError struct {

@@ -1,21 +1,25 @@
 package tester
 
 import (
-	"github.com/robojones/gqltest/config"
-	"github.com/robojones/gqltest/source/reader"
-	"github.com/robojones/gqltest/source/validator"
+	"github.com/robojones/gqltest/validator"
+	"time"
 )
 
 type Tester struct {
-	config *config.Config
-	reader *reader.Reader
+	config    TesterConfig
 	validator *validator.Validator
 }
 
-func NewTester(c *config.Config, r *reader.Reader, v *validator.Validator) *Tester {
+type TesterConfig interface {
+	Endpoint() string
+	TestGlob() string
+	StartTimeout() time.Duration
+	TestTimeout() time.Duration
+}
+
+func NewTester(c TesterConfig, v *validator.Validator) *Tester {
 	return &Tester{
-		config: c,
-		reader: r,
+		config:    c,
 		validator: v,
 	}
 }

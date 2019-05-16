@@ -1,10 +1,10 @@
-package directives
+package source
 
 import "fmt"
 
 type StatusError struct {
-	status     string
-	url        string
+	status string
+	url    string
 }
 
 func (e *StatusError) Error() string {

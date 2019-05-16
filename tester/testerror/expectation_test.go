@@ -3,7 +3,7 @@ package testerror
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
-	json2 "github.com/robojones/gqltest/tester/json"
+	json2 "github.com/robojones/gqltest/graphql/json"
 	"gotest.tools/assert"
 	"log"
 	"strings"

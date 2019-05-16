@@ -1,4 +1,4 @@
-package reader
+package source
 
 import (
 	"github.com/robojones/gqltest/test_util/tempdir"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestReader_Read(t *testing.T) {
+func TestReadAll(t *testing.T) {
 	var (
 		files    = []string{"a.txt", "b.graphql", "c.graphql"}
 		matching = files[1:]
@@ -25,9 +25,9 @@ func TestReader_Read(t *testing.T) {
 		dirs[i] = tempdir.Dir(t, dir, subdir)
 	}
 
-	reader := NewReader()
+	r, err := ReadAll(path.Join(dir, "*.graphql"))
 
-	r := reader.Read(path.Join(dir, "*.graphql"))
+	assert.NilError(t, err)
 
 	for _, file := range matching {
 		_, ok := r[file]

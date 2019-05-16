@@ -1,6 +1,8 @@
 package graphql
 
-import "github.com/vektah/gqlparser/ast"
+import (
+	"github.com/vektah/gqlparser/ast"
+)
 
 func serializeInlineFragment(frag *ast.InlineFragment, indent int) string {
 	r := spread
