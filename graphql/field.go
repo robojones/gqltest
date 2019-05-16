@@ -1,6 +1,8 @@
 package graphql
 
-import "github.com/vektah/gqlparser/ast"
+import (
+	"github.com/vektah/gqlparser/ast"
+)
 
 func serializeField(field *ast.Field, indent int) string {
 	r := ""

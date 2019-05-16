@@ -1,7 +1,8 @@
 package validator
 
 import (
-	"github.com/robojones/gqltest/source/reader"
+	"github.com/robojones/gqltest/env"
+	"github.com/robojones/gqltest/source"
 	"github.com/robojones/gqltest/test_util/tempdir"
 	"github.com/vektah/gqlparser/ast"
 	"github.com/vektah/gqlparser/parser"
@@ -65,12 +66,11 @@ func TestNewValidator(t *testing.T) {
 
 	tempdir.File(t, dir, testSchemaName, testSchema)
 
-	r := reader.NewReader()
 	c := &testConfig{
 		schemaGlob: path.Join(dir, graphqlsGlob),
 	}
 
-	validator, err := NewValidator(c, r)
+	validator, err := NewValidator(c, env.NewEnv())
 	assert.NilError(t, err)
 
 	doc, gqlErr := parser.ParseQuery(&ast.Source{
@@ -89,16 +89,16 @@ func TestNewValidatorWriteDirectives(t *testing.T) {
 
 	directives := path.Join(dir, "directives.graphql")
 
-	r := reader.NewReader()
 	c := &testConfig{
 		schemaGlob: path.Join(dir, graphqlsGlob),
 		directives: directives,
 	}
 
-	_, err := NewValidator(c, r)
+	_, err := NewValidator(c, env.NewEnv())
 	assert.NilError(t, err)
 
-	d := r.ReadSource(directives)
+	d, err := source.Read(directives)
+	assert.NilError(t, err)
 
 	assert.Equal(t, d.Name, directives)
 	assert.Assert(t, d.Input != "")
@@ -110,12 +110,11 @@ func TestNewValidatorInvalidQuery(t *testing.T) {
 
 	tempdir.File(t, dir, testSchemaName, testSchema)
 
-	r := reader.NewReader()
 	c := &testConfig{
 		schemaGlob: path.Join(dir, graphqlsGlob),
 	}
 
-	validator, err := NewValidator(c, r)
+	validator, err := NewValidator(c, env.NewEnv())
 	assert.NilError(t, err)
 
 	doc, gqlErr := parser.ParseQuery(&ast.Source{

@@ -2,7 +2,7 @@ package test
 
 import (
 	"github.com/pkg/errors"
-	"github.com/robojones/gqltest/tester/expectation"
+	"github.com/robojones/gqltest/test/expectation"
 	"github.com/vektah/gqlparser/ast"
 	"github.com/vektah/gqlparser/parser"
 	"gotest.tools/assert"

@@ -16,12 +16,12 @@ import (
 const (
 	testPort   = "4444"
 	exampleDir = "example"
+	command    = "gqltest"
 )
 
 var (
 	goExecPath = path.Join(runtime.GOROOT(), "bin/go")
 	install    = []string{"install", "."}
-	command    = "gqltest"
 )
 
 func installCLI(t *testing.T) {
