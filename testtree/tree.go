@@ -26,5 +26,5 @@ func (t *Tree) SetFile(filepath string, f *File) {
 		current = next
 	}
 
-	current.files[name] = f
+	current.Files[name] = f
 }

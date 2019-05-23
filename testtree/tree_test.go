@@ -17,6 +17,6 @@ func TestTree_SetFile(t *testing.T) {
 
 	tree.SetFile(p, f)
 
-	r := tree.root.children["path"].children["to"].files["file.graphql"]
+	r := tree.root.children["path"].children["to"].Files["file.graphql"]
 	assert.Equal(t, r, f)
 }

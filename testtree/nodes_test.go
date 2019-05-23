@@ -39,7 +39,7 @@ func TestNodes_Next(t *testing.T) {
 	node := nodes.current
 
 	assert.Equal(t, nodes.index, len(p))
-	assert.Equal(t, node.files[filename], file)
+	assert.Equal(t, node.Files[filename], file)
 }
 
 func TestNodes_Previous(t *testing.T) {
